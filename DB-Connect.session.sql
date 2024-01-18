@@ -139,7 +139,7 @@ order by CovidPercent DESC;
 
 Select location, max(total_deaths) as TotalDeathCount
 from CovidDeaths 
-where continent <> ''
+where continent is not null
 -- Where location like '%states%'
 group by location
 order by TotalDeathCount DESC;
@@ -160,7 +160,7 @@ Select date, SUM(new_cases) as total_cases, SUM(new_deaths)as total_deaths, SUM(
 from CovidDeaths
 where continent is not null
 group by date
-order by 1;
+order by 1, 2;
 
 
 -- Looking at Total Population vs Vaccinations
@@ -211,3 +211,35 @@ From PopvsVac;
 
 Select *
 from PercentPopulationVaccinated;
+
+
+-- Queries for Tableau Viz
+
+-- 1.
+
+Select SUM(new_cases) as total_cases, SUM(new_deaths)as total_deaths, SUM(new_deaths)/SUM(new_cases)*100 as DeathPercent
+from CovidDeaths
+where continent is not null
+order by 1, 2;
+
+-- 2.
+
+Select continent, max(total_deaths) as TotalDeathCount
+from CovidDeaths 
+where continent is not null
+group by continent
+order by TotalDeathCount DESC;
+
+-- 3.
+
+Select location, population, max(total_cases) as HighestInfectionCount, max((total_cases/population))*100 as CovidPercent
+from CovidDeaths 
+group by location, population
+order by CovidPercent DESC;
+
+-- 4.
+
+Select location, population, date,  max(total_cases) as HighestInfectionCount, max((total_cases/population))*100 as CovidPercent
+from CovidDeaths 
+group by location, population, date
+order by CovidPercent DESC;
